@@ -1,0 +1,64 @@
+import torch
+import torch.nn as nn
+from sklearn.ensemble import VotingClassifier
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+class PulmonaryFunctionEnsemble(nn.Module):
+    """Voting ensemble for early detection of pulmonary function decline"""
+    
+    def __init__(self, n_features=10, n_base_models=3):
+        super(PulmonaryFunctionEnsemble, self).__init__()
+        
+        # Base model 1: Neural network
+        self.model1 = nn.Sequential(
+            nn.Linear(n_features, 64),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Linear(32, 2)
+        )
+        
+        # Base model 2: Simpler network
+        self.model2 = nn.Sequential(
+            nn.Linear(n_features, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 2)
+        )
+        
+        # Base model 3: Minimal network
+        self.model3 = nn.Sequential(
+            nn.Linear(n_features, 48),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(48, 2)
+        )
+        
+        self.scaler = StandardScaler()
+    
+    def forward(self, x):
+        # Get predictions from all base models
+        out1 = self.model1(x)
+        out2 = self.model2(x)
+        out3 = self.model3(x)
+        
+        # Average the logits (voting)
+        ensemble_out = (out1 + out2 + out3) / 3
+        return ensemble_out
+    
+    def predict(self, x):
+        """Return class prediction"""
+        with torch.no_grad():
+            output = self.forward(x)
+            return torch.argmax(output, dim=1)
+
+# Example usage
+if __name__ == "__main__":
+    model = PulmonaryFunctionEnsemble(n_features=10, n_base_models=3)
+    
+    # Save model
+    torch.save(model.state_dict(), '/d:/nithish/models/VotingEnsemble.pt')
+    print("Model saved successfully")

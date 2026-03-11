@@ -1,0 +1,46 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CustomNN(nn.Module):
+    """
+    Neural Network for early detection of pulmonary function decline
+    in power loom factory workers based on health metrics.
+    """
+    def __init__(self, input_size=12, hidden_size1=64, hidden_size2=32, output_size=2):
+        super(CustomNN, self).__init__()
+        
+        # Input layer to first hidden layer
+        self.fc1 = nn.Linear(input_size, hidden_size1)
+        self.bn1 = nn.BatchNorm1d(hidden_size1)
+        
+        # First to second hidden layer
+        self.fc2 = nn.Linear(hidden_size1, hidden_size2)
+        self.bn2 = nn.BatchNorm1d(hidden_size2)
+        
+        # Second hidden to output layer
+        self.fc3 = nn.Linear(hidden_size2, output_size)
+        
+        # Dropout for regularization
+        self.dropout = nn.Dropout(0.3)
+    
+    def forward(self, x):
+        # First hidden layer with activation and dropout
+        x = F.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        
+        # Second hidden layer with activation and dropout
+        x = F.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        
+        # Output layer
+        x = self.fc3(x)
+        return x
+
+# Model instantiation
+if __name__ == "__main__":
+    model = CustomNN(input_size=12, hidden_size1=64, hidden_size2=32, output_size=2)
+    print(model)
+    
+    # Save model
+    torch.save(model.state_dict(), 'CustomNN.pt')

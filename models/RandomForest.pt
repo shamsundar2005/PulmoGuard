@@ -1,0 +1,60 @@
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from sklearn.preprocessing import StandardScaler
+import joblib
+
+# Load your dataset
+# df = pd.read_csv('pulmonary_data.csv')
+
+# Example feature columns (adjust based on your actual data)
+features = ['age', 'years_exposure', 'fev1', 'fvc', 'fev1_fvc_ratio', 
+            'dust_exposure_level', 'smoking_status', 'bmi']
+target = 'pulmonary_decline'  # Binary: 1 = decline detected, 0 = normal
+
+# X = df[features]
+# y = df[target]
+
+# Split data
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize features
+# scaler = StandardScaler()
+# X_train_scaled = scaler.fit_transform(X_train)
+# X_test_scaled = scaler.transform(X_test)
+
+# Train Random Forest
+# rf_model = RandomForestClassifier(
+#     n_estimators=100,
+#     max_depth=15,
+#     min_samples_split=5,
+#     min_samples_leaf=2,
+#     random_state=42,
+#     n_jobs=-1,
+#     class_weight='balanced'
+# )
+
+# rf_model.fit(X_train_scaled, y_train)
+
+# Predictions
+# y_pred = rf_model.predict(X_test_scaled)
+# y_pred_proba = rf_model.predict_proba(X_test_scaled)[:, 1]
+
+# Evaluation
+# print(classification_report(y_test, y_pred))
+# print(f"ROC-AUC Score: {roc_auc_score(y_test, y_pred_proba)}")
+
+# Feature importance
+# feature_importance = pd.DataFrame({
+#     'feature': features,
+#     'importance': rf_model.feature_importances_
+# }).sort_values('importance', ascending=False)
+# print(feature_importance)
+
+# Save model
+# joblib.dump(rf_model, '/d:/nithish/models/RandomForest.pt')
+# joblib.dump(scaler, '/d:/nithish/models/scaler.pt')
+
+print("Random Forest model for pulmonary function decline detection ready!")
