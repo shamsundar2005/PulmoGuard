@@ -1,0 +1,49 @@
+import pickle
+import numpy as np
+import pandas as pd
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, roc_auc_score
+
+# Sample feature names relevant to pulmonary function
+feature_names = [
+    'age', 'years_at_factory', 'dust_exposure_level',
+    'fev1', 'fvc', 'fev1_fvc_ratio', 'work_hours_per_week',
+    'smoking_status', 'bmi', 'respiratory_symptoms'
+]
+
+# Create sample data (replace with actual data)
+X = np.random.rand(200, 10)
+y = np.random.randint(0, 2, 200)
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train XGBoost model
+model = XGBClassifier(
+    n_estimators=100,
+    max_depth=6,
+    learning_rate=0.1,
+    random_state=42,
+    eval_metric='logloss'
+)
+
+model.fit(X_train_scaled, y_train, verbose=False)
+
+# Evaluate
+y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+print(f"ROC-AUC Score: {roc_auc_score(y_test, y_pred_proba):.4f}")
+
+# Save model
+with open('/d:/nithish/models/XGBoost.pkl', 'wb') as f:
+    pickle.dump({'model': model, 'scaler': scaler, 'features': feature_names}, f)
+
+print("Model saved successfully!")

@@ -1,0 +1,45 @@
+import pickle
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+
+# Sample feature names for pulmonary function assessment
+features = [
+    'FEV1',  # Forced Expiratory Volume in 1 second
+    'FVC',   # Forced Vital Capacity
+    'FEV1_FVC_ratio',
+    'exposure_years',
+    'dust_exposure_level',
+    'age',
+    'smoking_status',
+    'BMI',
+    'respiratory_symptoms_score'
+]
+
+# Create and train Gradient Boosting model
+model = GradientBoostingClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=5,
+    min_samples_split=10,
+    min_samples_leaf=5,
+    random_state=42,
+    verbose=0
+)
+
+# Save model to pickle file
+with open('/d:/nithish/models/GradientBoosting.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+print("Gradient Boosting model saved successfully to GradientBoosting.pkl")
+
+
+# Example: Load and use the model
+def load_model(filepath):
+    with open(filepath, 'rb') as f:
+        return pickle.load(f)
+
+# model = load_model('/d:/nithish/models/GradientBoosting.pkl')
